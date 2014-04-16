@@ -82,9 +82,25 @@ void pintadoTablero(){
 	exit(EXIT_FAILURE);
     }
     for(int fila = 0; fila < MAX; fila++)
+	for(int columna = 0; columna < MAX; columna++){
+	    fscanf(fp, " %c[^\n]", &s[fila][columna]); 
+	    s[10][10] = 'T';
+
+	}
+       //fgets(s[fila], MAX, fp);
+    
+
+    
+  fclose(fp); 
+
+     for(int fila = 0; fila < MAX; fila++){
 	for(int columna = 0; columna < MAX; columna++)
-	    fscanf(fp, " %c", &s[fila][columna]); 
-            
+	    printf("%c", s[fila][columna]);
+
+	printf("\n");
+     }
+
+     printf("\n");
 
 	    
 	    
@@ -93,7 +109,6 @@ void pintadoTablero(){
 	    printf ("Error!!! mas de 9 lineas\n");
 	    break;
 	}*/
-    fclose (fp); 
 
 
 }
@@ -106,12 +121,12 @@ int main(){
     sleep(3);
 
 
-    do{
+ //   do{
 	pintadoTablero();
 	// Poner a 0 todas las variables, para comenzar una nueva partida.
 	// Mover
 	// Felicitar al jugador y enseñarles los puntos conseguidos.
-    }while(opcion != salir);
+   // }while(opcion != salir);
 
     // Poner los créditos del juego.
     return EXIT_SUCCESS;
