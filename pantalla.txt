@@ -1,25 +1,25 @@
 LLLLLLLLLLLLLLLLLLLLLLLLL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
-LiiiiiiiiiiiiiiiiiiiiiiiL
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
+L                       L
 LLLLLLLLLLLLLLLLLLLLLLLLL
