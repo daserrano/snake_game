@@ -1,4 +1,3 @@
-
 /*
  *******************************
  *	EL JUEGO DE LA SERPIENTE	*
@@ -60,6 +59,13 @@
 #include <unistd.h>
 
 #define MAX 25
+#define N 10
+
+struct TAnillo{
+    int x;
+    int y;
+
+};
 
 void pintadoPresentacion(){
 
@@ -73,7 +79,7 @@ void pintadoTablero(){
     // system("cat ./pantalla.txt"); 
     system("clear");
 
-    char tablero[MAX][MAX];
+    char tablero[MAX][MAX+1];
     FILE *fp;
 
     if ((fp = fopen ("pantalla.txt", "r")) == NULL) {
@@ -81,28 +87,12 @@ void pintadoTablero(){
 	exit(EXIT_FAILURE);
     }
     for(int fila = 0; fila < MAX ; fila++)
-	for(int columna = 0; columna < MAX; columna++){
-	    fscanf(fp, " %c", &tablero[fila][columna]); 
-	    //fgets(&tablero[fila][columna], 25, fp);
-	    /*if(fgetc(fp) != '\0')
-	      tablero[fila][columna] = fgetc(fp);
-	     */
-
-	}
-
-    for(int fila = 0; fila < MAX; fila++)
-	for(int columna = 0; columna < MAX; columna++)
-	    if(tablero[fila][columna] == 'o')
-		tablero[fila][columna] = ' ';
+	    fgets(tablero[fila], MAX+1, fp);
 
     fclose(fp); 
 
-    for(int fila = 0; fila < MAX; fila++){
-	for(int columna = 0; columna < MAX; columna++)
-	    printf("%c", tablero[fila][columna]);
-
-	printf("\n");
-    }
+    for(int fila = 0; fila < MAX; fila++)
+	    printf("%s", tablero[fila]);
 
     printf("\n");
 
@@ -178,9 +168,10 @@ ALGORITMO:
 int main(void){
 
     char opcion;
+    struct TAnillo serpiente[N];
 
     pintadoPresentacion();
-    sleep(3);
+    sleep(2);
 
     do{
 	pintadoTablero();
