@@ -57,15 +57,31 @@
 #include <stdlib.h>
 #include <stdio_ext.h>
 #include <unistd.h>
+#include <ncurses.h>
+#include <ctype.h>
 
 #define MAX 25
 #define N 10
 
+struct TCoordenada{
+    double x; 
+    double y;
+};
+
 struct TAnillo{
-    int x;
-    int y;
+    double x;
+    double y;
 
 };
+
+void rellenar_serpiente(struct TAnillo coordenada[N]){
+
+    for(int i=0; i<N; i++){
+	coordenada[i].x = 10 + i;
+	coordenada[i].y = 10;
+    }
+
+}
 
 void pintadoPresentacion(){
 
@@ -111,92 +127,81 @@ void pintadoTablero(){
 
 } 
 
-void mover(){
-
-    /*
-Entrada: -
-Salida : -
-
-Descipción: Lazo (bucle de control) se encarga de avanzar el juego
-paso a paso.
-
-PROCEDIMIENTO
-VARIABLES
-     */
-
-    bool serpienteViva = true;
-
-    /*
-       FIN VARIABLES
-
-ALGORITMO:
-     */
-    do{
-	/*
-	 */
-	/*
-	   1. Cambiar la dirección de avance de la serpiente según la tecla pulsada.
-	   2. Borrar el exceso de pulsaciones leyendo caracteres hasta que se
-	   vacíe el buffer.
-
-	   Si la siguiente posición de la serpiente es distinto de la ' ' (gettext):
-	   Si la siguiente posición es una fruta:
-	   1. Incrementar la variable de la serpiente crecerCola en tantas
-	   posiciones como indique la fruta (incrementando las posiciones
-	   que le quedan por crecer).
-	   2. Incremetar los puntos del usuario tanto como indique la fruta.
-	   3. Poner a 0 el tiempo hasta la siguiente fruta (opcional).
-	   4. Incrementar la velocidad por cada decena de frutas comidas.
-	   Si no:
-	   1. El usuario se ha chocado y debe morir (cambiando su variable de
-	   estado);
-
-	   Fin Si
-	   Fin Si.
-
-	   Si las posiciones que le quedan por crecer > 0 :
-	   1. Incrementar la cola en 1 anillo.
-	   2. decrementar en 1 las posiciones que le quedan por crecer.
-
-	   Decrementar en 1 el tiempo hasta la siguiente fruta.
-	   Si el tiempo hasta la siguiente Fruta <= 0 :
-	   1. Generar un tipo de fruta aleatoriamente.
-	   2. Generar aleatoriamente el tiempo hasta la siguiente fruta.
-
-	   avanzar la serpiente.
-	   Incrementar en 1 los puntos del usuario (1 definido como constante PUNTOS).
-	   pintar la serpiente.
-	 */
-    }while(serpienteViva = true);
-    /*
-       FIN ALGORITMO.
-       FIN PROCEDIMIENTO.
-     */
-
-
+void muestra(struct TAnillo coordenada[N]){
+    clear();
+    for(int i=0; i<N; i++)
+	mvprintw(coordenada[i].y, coordenada[i].x, "*");
+    refresh();
 
 }
 
+void mover(struct TCoordenada incremento, struct TAnillo coordenada[N]){
+    
+    for(int i=N-1; i>0; i--){
+	coordenada[i].x = coordenada[i-1].x;
+	coordenada[i].y = coordenada[i-1].y;
+    }
+    coordenada[0].x += incremento.x;
+    coordenada[0].y += incremento.y;
 
-int main(void){
+}
+
+int main(int argc, char *argv[]){
 
     char opcion;
     struct TAnillo serpiente[N];
+    struct TCoordenada movimiento = {0, -1};
+    int user_input;
 
     pintadoPresentacion();
     sleep(1);
     getchar();
 
+    rellenar_serpiente(serpiente);
+
+    initscr();   //Crear una matriz para pintar.
+    halfdelay(3);  //Hace que getch espere 3 decimas de segundo (para mover sola la serpiente).
+    keypad(stdscr, TRUE); //Para poder leer las flechas.
+    noecho();  // Para que no se vea el caracter pulsado.
+    curs_set(0); //No se ve el cursor.
+    
     do{
-	pintadoTablero();
-	// Poner a 0 todas las variables, para comenzar una nueva partida.
-	mover();
-	// Felicitar al jugador y enseñarles los puntos conseguidos.
+	while(1){
+//	pintadoTablero();
+	    user_input = getch();
+	    switch(tolower(user_input)){
+		case 'w':
+		case KEY_UP:
+		    movimiento.x = 0;
+		    movimiento.y = -1;
+		    break;
+		case 's':
+		case KEY_DOWN:
+		    movimiento.x = 0;
+		    movimiento.y = 1;
+		    break;
+		case 'a':
+		case KEY_LEFT:
+		    movimiento.x = -1;
+		    movimiento.y = 0;
+		    break;
+		case 'd':
+		case KEY_RIGHT:
+		    movimiento.x = 1;
+		    movimiento.y = 0;
+		    break;
+	    }
+	    mover(movimiento, serpiente);
+	    muestra(serpiente);
+
+	}
 	printf("¿Jugar otra partida? s/n ");
 	__fpurge(stdin);
 	scanf(" %c", &opcion);
     }while(opcion != 'n');
 
     // Poner los créditos del juego.
+    getchar();
+    endwin();   //Libera la matriz.
     return EXIT_SUCCESS;
 }
