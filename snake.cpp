@@ -79,20 +79,33 @@ void pintadoTablero(){
     // system("cat ./pantalla.txt"); 
     system("clear");
 
-    char tablero[MAX][MAX+1];
+    char tablero[MAX][MAX];
     FILE *fp;
+    int i = 0;
 
     if ((fp = fopen ("pantalla.txt", "r")) == NULL) {
 	fprintf (stderr, "Error al abrir el archivo %s\n", "pantalla.txt");
 	exit(EXIT_FAILURE);
     }
-    for(int fila = 0; fila < MAX ; fila++)
-	    fgets(tablero[fila], MAX+1, fp);
 
+/*	while (!feof(fp)) {
+	    fscanf(fp, "%s", tablero[i]);
+	    i++;
+	}
+ */
+    for(int fila = 0; fila < MAX ; fila++){
+	fgets(tablero[fila], MAX+1, fp);
+	//	fflush(stdin);
+    }
+    /*  for(int fila=0; fila<MAX; fila++)
+	for(int col=0; col<MAX; col++){
+	fscanf(fp, "%c", &tablero[fila][col]);
+	}
+     */
     fclose(fp); 
 
     for(int fila = 0; fila < MAX; fila++)
-	    printf("%s", tablero[fila]);
+	printf("%s", tablero[fila]);
 
     printf("\n");
 
@@ -120,7 +133,7 @@ ALGORITMO:
      */
     do{
 	/*
-	   */
+	 */
 	/*
 	   1. Cambiar la dirección de avance de la serpiente según la tecla pulsada.
 	   2. Borrar el exceso de pulsaciones leyendo caracteres hasta que se
@@ -171,7 +184,8 @@ int main(void){
     struct TAnillo serpiente[N];
 
     pintadoPresentacion();
-    sleep(2);
+    sleep(1);
+    getchar();
 
     do{
 	pintadoTablero();
