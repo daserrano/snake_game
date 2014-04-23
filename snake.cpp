@@ -62,6 +62,7 @@
 
 #define MAX 25
 #define L0 4  /* Longitud inicial */
+#define ESC 27
 
 struct TCoordenada{
     double x; 
@@ -101,7 +102,7 @@ void pintadoTablero(){
     // system("cat ./pantalla.txt"); 
     system("clear");
 
-    char tablero[MAX][MAX];
+    char tablero[MAX];
     FILE *fp;
     static int i = 0;
 
@@ -110,27 +111,28 @@ void pintadoTablero(){
 	exit(EXIT_FAILURE);
     }
 
-	while (!feof(fp)) {
-	    fgets(tablero[i], MAX+1, fp);
-	    i++;
+    char pixel;
+	while( (pixel = fgetc(fp)) != EOF) {
+	    printw("%c", pixel);
 	}
 
-    for(int fila = 0; fila < MAX ; fila++){
-	fgets(tablero[fila], MAX+1, fp);
+    /*for(int fila = 0; fila < MAX ; fila++){
+	fgets(tablero, MAX, fp);
 	//	fflush(stdin);
     }
-    /*  for(int fila=0; fila<MAX; fila++)
-	for(int col=0; col<MAX; col++){
-	fscanf(fp, "%c", &tablero[fila][col]);
-	}
+    for(int fila=0; fila<MAX; fila++)
+    for(int col=0; col<MAX; col++){
+    fscanf(fp, "%c", &tablero[fila][col]);
+    }
      */
-    fclose(fp); 
+	refresh();
+	fclose(fp); 
 
-    for(int fila = 0; fila < MAX; fila++)
-	printf("%s", tablero[fila]);
+	/*for(int fila = 0; fila < MAX; fila++)
+	    printf("%s", tablero);
 
-    printf("\n");
-
+	printf("\n");
+*/
 }  
 
 void muestra(Serpiente *serpiente){
@@ -142,7 +144,7 @@ void muestra(Serpiente *serpiente){
 }
 
 void mover(struct TCoordenada incremento, Serpiente *serpiente){
-    
+
     for(int i=L0-1; i>0; i--){
 	serpiente->anillo[i].x = serpiente->anillo[i-1].x;
 	serpiente->anillo[i].y = serpiente->anillo[i-1].y;
@@ -157,11 +159,10 @@ int main(int argc, char *argv[]){
     char opcion;
     Serpiente serpiente;                       //Se pone Serpiente por el alias creado antes.
     serpiente.longitud = L0;
-    struct TCoordenada movimiento = {0, -1};
+    struct TCoordenada movimiento = {0, 1};
     int user_input;
 
     pintadoPresentacion();
-    sleep(1);
     getchar();
 
     rellenar_serpiente(&serpiente);
@@ -171,11 +172,11 @@ int main(int argc, char *argv[]){
     keypad(stdscr, TRUE); //Para poder leer las flechas.
     noecho();  // Para que no se vea el caracter pulsado.
     curs_set(0); //No se ve el cursor.
-    
+
     do{
-	while(1){
-	pintadoTablero();
-	    user_input = getch();
+	while((user_input = getch()) != ESC){
+	    //pintadoTablero();
+	    //user_input = getch();
 	    switch(tolower(user_input)){   //Tolower = indiferencia sobre mayusculas y minusculas.
 		case 'w':
 		case KEY_UP:
@@ -202,12 +203,12 @@ int main(int argc, char *argv[]){
 	    muestra(&serpiente);
 
 	}
-	printf("¿Jugar otra partida? s/n ");
+	clear();
+	mvprintw(LINES/4, COLS/2.5, "¿Jugar otra partida? s/n ");
 	__fpurge(stdin);
 	scanf(" %c", &opcion);
     }while(opcion != 'n');
 
-    getchar();
     endwin();   //Libera la matriz.
     return EXIT_SUCCESS;
 }
