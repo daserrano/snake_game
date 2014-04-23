@@ -61,7 +61,7 @@
 #include <ctype.h>
 
 #define MAX 25
-#define N 10
+#define L0 4  /* Longitud inicial */
 
 struct TCoordenada{
     double x; 
@@ -72,13 +72,19 @@ struct TAnillo{
     double x;
     double y;
 
-};
+}; 
 
-void rellenar_serpiente(struct TAnillo coordenada[N]){
+typedef struct TSerpiente{
+    struct TAnillo anillo[L0];
+    int longitud;
 
-    for(int i=0; i<N; i++){
-	coordenada[i].x = 10 + i;
-	coordenada[i].y = 10;
+} Serpiente;                    // Typedef struct TSerpiente Serpiente -> sirve para darle un alias(Serpiente) a la struct TSerpiente. 
+
+void rellenar_serpiente(Serpiente *serpiente){
+
+    for(int i=0; i<serpiente->longitud; i++){
+	serpiente->anillo[i].x = 10 + i;
+	serpiente->anillo[i].y = 10;
     }
 
 }
@@ -88,7 +94,7 @@ void pintadoPresentacion(){
     system("clear");
     system("cat ./presentacion.txt");
 
-}
+} 
 
 void pintadoTablero(){
 
@@ -97,18 +103,18 @@ void pintadoTablero(){
 
     char tablero[MAX][MAX];
     FILE *fp;
-    int i = 0;
+    static int i = 0;
 
     if ((fp = fopen ("pantalla.txt", "r")) == NULL) {
 	fprintf (stderr, "Error al abrir el archivo %s\n", "pantalla.txt");
 	exit(EXIT_FAILURE);
     }
 
-/*	while (!feof(fp)) {
-	    fscanf(fp, "%s", tablero[i]);
+	while (!feof(fp)) {
+	    fgets(tablero[i], MAX+1, fp);
 	    i++;
 	}
- */
+
     for(int fila = 0; fila < MAX ; fila++){
 	fgets(tablero[fila], MAX+1, fp);
 	//	fflush(stdin);
@@ -125,31 +131,32 @@ void pintadoTablero(){
 
     printf("\n");
 
-} 
+}  
 
-void muestra(struct TAnillo coordenada[N]){
+void muestra(Serpiente *serpiente){
     clear();
-    for(int i=0; i<N; i++)
-	mvprintw(coordenada[i].y, coordenada[i].x, "*");
+    for(int i=0; i<L0; i++)
+	mvprintw(serpiente->anillo[i].y, serpiente->anillo[i].x, "*");
     refresh();
 
 }
 
-void mover(struct TCoordenada incremento, struct TAnillo coordenada[N]){
+void mover(struct TCoordenada incremento, Serpiente *serpiente){
     
-    for(int i=N-1; i>0; i--){
-	coordenada[i].x = coordenada[i-1].x;
-	coordenada[i].y = coordenada[i-1].y;
+    for(int i=L0-1; i>0; i--){
+	serpiente->anillo[i].x = serpiente->anillo[i-1].x;
+	serpiente->anillo[i].y = serpiente->anillo[i-1].y;
     }
-    coordenada[0].x += incremento.x;
-    coordenada[0].y += incremento.y;
+    serpiente->anillo[0].x += incremento.x;
+    serpiente->anillo[0].y += incremento.y;
 
-}
+} 
 
 int main(int argc, char *argv[]){
 
     char opcion;
-    struct TAnillo serpiente[N];
+    Serpiente serpiente;                       //Se pone Serpiente por el alias creado antes.
+    serpiente.longitud = L0;
     struct TCoordenada movimiento = {0, -1};
     int user_input;
 
@@ -157,7 +164,7 @@ int main(int argc, char *argv[]){
     sleep(1);
     getchar();
 
-    rellenar_serpiente(serpiente);
+    rellenar_serpiente(&serpiente);
 
     initscr();   //Crear una matriz para pintar.
     halfdelay(3);  //Hace que getch espere 3 decimas de segundo (para mover sola la serpiente).
@@ -167,9 +174,9 @@ int main(int argc, char *argv[]){
     
     do{
 	while(1){
-//	pintadoTablero();
+	pintadoTablero();
 	    user_input = getch();
-	    switch(tolower(user_input)){
+	    switch(tolower(user_input)){   //Tolower = indiferencia sobre mayusculas y minusculas.
 		case 'w':
 		case KEY_UP:
 		    movimiento.x = 0;
@@ -191,8 +198,8 @@ int main(int argc, char *argv[]){
 		    movimiento.y = 0;
 		    break;
 	    }
-	    mover(movimiento, serpiente);
-	    muestra(serpiente);
+	    mover(movimiento, &serpiente);
+	    muestra(&serpiente);
 
 	}
 	printf("¿Jugar otra partida? s/n ");
@@ -200,7 +207,6 @@ int main(int argc, char *argv[]){
 	scanf(" %c", &opcion);
     }while(opcion != 'n');
 
-    // Poner los créditos del juego.
     getchar();
     endwin();   //Libera la matriz.
     return EXIT_SUCCESS;
