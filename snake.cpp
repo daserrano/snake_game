@@ -61,27 +61,29 @@
 #include <ctype.h>
 #include <time.h>
 
-#define MAX 25
-#define L0 4  /* Longitud inicial */
-#define ESC 27
-
+#define MAXLINES 25
+#define MAXCOLS  50
+#define L0 4  /*  Longitud inicial */
+#define ESC 27   
+#define ESP 32
+                 
 struct TCoordenada{
-    double x; 
-    double y;
-};
-
-struct TAnillo{
-    double x;
-    double y;
-
-}; 
-
+    double x;    
+    double y;    
+};               
+                 
+struct TAnillo{  
+    double x;    
+    double y;    
+                 
+};                
+                 
 typedef struct TSerpiente{ 
     struct TAnillo anillo[L0];
-    int longitud;
-
-} Serpiente;                    // Typedef struct TSerpiente Serpiente -> sirve para darle un alias(Serpiente) a la struct TSerpiente. 
-
+    int longitud ;
+                 
+} Serpiente;                      // Typedef struct TSerpiente Serpiente -> sirve para darle un alias(Serpiente) a la struct TSerpiente. 
+                 
 void rellenar_serpiente(Serpiente *serpiente){
 
     for(int i=0; i<serpiente->longitud; i++){
@@ -93,9 +95,31 @@ void rellenar_serpiente(Serpiente *serpiente){
 
 void pintadoPresentacion(){
 
-    system("clear");
-    system("cat ./presentacion.txt");
+   // system("clear");
+   // system("cat ./presentacion.txt");
 
+    FILE *fp;
+
+    if ((fp = fopen ("presentacion.txt", "r")) == NULL) {
+	fprintf (stderr, "Error al abrir el archivo %s\n", "presentacion.txt");
+	exit(EXIT_FAILURE);
+    }
+
+    //attron(COLOR_PAIR(5));
+    char pixel;
+    int line = 0;
+    while( (pixel = fgetc(fp)) != EOF) {
+	printw("%c", pixel);
+	line++;
+	if(line >= 97 && line <= 143 || line >= 168 && line <= 225 || line >= 250 && line <= 305 || line >= 333 && line <= 389
+		|| line >= 408 && line <= 466 || line >= 499 && line <= 540 || line >= 572 && line <= 629 || line >= 651 && line <= 710)
+	    attron(COLOR_PAIR(2));
+	else
+	    attron(COLOR_PAIR(5));
+    }
+    attroff(COLOR_PAIR(2));
+    attroff(COLOR_PAIR(5));
+    fclose(fp);
 } 
 
 void pintadoTablero(){
@@ -103,9 +127,8 @@ void pintadoTablero(){
     // system("cat ./pantalla.txt"); 
     system("clear");
 
-    char tablero[MAX];
+    char tablero[MAXLINES];
     FILE *fp;
-    static int i = 0;
 
     if ((fp = fopen ("pantalla.txt", "r")) == NULL) {
 	fprintf (stderr, "Error al abrir el archivo %s\n", "pantalla.txt");
@@ -113,30 +136,21 @@ void pintadoTablero(){
     }
 
     char pixel;
-	while( (pixel = fgetc(fp)) != EOF) {
-	    printw("%c", pixel);
-	}
+    while( (pixel = fgetc(fp)) != EOF) {
+	printw("%c", pixel);
+    }
 
-    /*for(int fila = 0; fila < MAX ; fila++){
-	fgets(tablero, MAX, fp);
-	//	fflush(stdin);
-    }
-    for(int fila=0; fila<MAX; fila++)
-    for(int col=0; col<MAX; col++){
-    fscanf(fp, "%c", &tablero[fila][col]);
-    }
+    refresh();
+    fclose(fp); 
+
+    /*for(int fila = 0; fila < MAX; fila++)
+      printf("%s", tablero);
+
+      printf("\n");
      */
-	refresh();
-	fclose(fp); 
-
-	/*for(int fila = 0; fila < MAX; fila++)
-	    printf("%s", tablero);
-
-	printf("\n");
-*/
 }  
 
-void muestra(Se, colorrpiente *serpiente, int color){
+void muestra(Serpiente *serpiente, int color){
     clear();
     pintadoTablero();
 
@@ -169,9 +183,6 @@ int main(int argc, char *argv[]){
     int user_input,
 	color = 0;
 
-    pintadoPresentacion();
-    getchar();
-
     rellenar_serpiente(&serpiente);
 
     initscr();   //Crear una matriz para pintar.
@@ -191,6 +202,10 @@ int main(int argc, char *argv[]){
     curs_set(0); //No se ve el cursor.
 
     color = (rand() % 5) + 1;
+
+    pintadoPresentacion();
+    while((user_input = getch()) != ESP){
+    }
 
     do{
 	while((user_input = getch()) != ESC){
@@ -221,9 +236,9 @@ int main(int argc, char *argv[]){
 
 	}
 	clear();
-	    mvprintw(LINES/4, COLS/2.5, "¿ Quieres salir ? s/n ");
-	    __fpurge(stdin);
-	    scanf(" %c", &opcion);
+	mvprintw(LINES/4, COLS/2.5, "¿ Quieres salir ? s/n ");
+	__fpurge(stdin);
+	scanf(" %c", &opcion);
     }while(tolower(opcion != 's'));
 
     endwin();   //Libera la matriz.
