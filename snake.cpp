@@ -59,6 +59,7 @@
 #include <unistd.h>
 #include <ncurses.h>
 #include <ctype.h>
+#include <time.h>
 
 #define MAX 25
 #define L0 4  /* Longitud inicial */
@@ -75,7 +76,7 @@ struct TAnillo{
 
 }; 
 
-typedef struct TSerpiente{
+typedef struct TSerpiente{ 
     struct TAnillo anillo[L0];
     int longitud;
 
@@ -135,10 +136,15 @@ void pintadoTablero(){
 */
 }  
 
-void muestra(Serpiente *serpiente){
+void muestra(Se, colorrpiente *serpiente, int color){
     clear();
+    pintadoTablero();
+
+    attron(COLOR_PAIR(color));
     for(int i=0; i<L0; i++)
 	mvprintw(serpiente->anillo[i].y, serpiente->anillo[i].x, "*");
+
+    attroff(COLOR_PAIR(color));
     refresh();
 
 }
@@ -160,7 +166,8 @@ int main(int argc, char *argv[]){
     Serpiente serpiente;                       //Se pone Serpiente por el alias creado antes.
     serpiente.longitud = L0;
     struct TCoordenada movimiento = {0, 1};
-    int user_input;
+    int user_input,
+	color = 0;
 
     pintadoPresentacion();
     getchar();
@@ -168,15 +175,25 @@ int main(int argc, char *argv[]){
     rellenar_serpiente(&serpiente);
 
     initscr();   //Crear una matriz para pintar.
+    start_color();
+
+    init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(3, COLOR_BLUE, COLOR_BLACK);
+    init_pair(4, COLOR_CYAN, COLOR_BLACK);
+    init_pair(5, COLOR_YELLOW, COLOR_BLACK);
+
+    srand(time(NULL));
+
     halfdelay(3);  //Hace que getch espere 3 decimas de segundo (para mover sola la serpiente).
     keypad(stdscr, TRUE); //Para poder leer las flechas.
     noecho();  // Para que no se vea el caracter pulsado.
     curs_set(0); //No se ve el cursor.
 
+    color = (rand() % 5) + 1;
+
     do{
 	while((user_input = getch()) != ESC){
-	    //pintadoTablero();
-	    //user_input = getch();
 	    switch(tolower(user_input)){   //Tolower = indiferencia sobre mayusculas y minusculas.
 		case 'w':
 		case KEY_UP:
@@ -200,14 +217,14 @@ int main(int argc, char *argv[]){
 		    break;
 	    }
 	    mover(movimiento, &serpiente);
-	    muestra(&serpiente);
+	    muestra(&serpiente, color);
 
 	}
 	clear();
-	mvprintw(LINES/4, COLS/2.5, "¿Jugar otra partida? s/n ");
-	__fpurge(stdin);
-	scanf(" %c", &opcion);
-    }while(opcion != 'n');
+	    mvprintw(LINES/4, COLS/2.5, "¿ Quieres salir ? s/n ");
+	    __fpurge(stdin);
+	    scanf(" %c", &opcion);
+    }while(tolower(opcion != 's'));
 
     endwin();   //Libera la matriz.
     return EXIT_SUCCESS;
