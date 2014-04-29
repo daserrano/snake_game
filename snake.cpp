@@ -105,7 +105,6 @@ void pintadoPresentacion(){
 	exit(EXIT_FAILURE);
     }
 
-    //attron(COLOR_PAIR(5));
     char pixel;
     int line = 0;
     while( (pixel = fgetc(fp)) != EOF) {
